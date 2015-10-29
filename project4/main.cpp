@@ -68,6 +68,13 @@ int main(int argc, char* argv[])
         // print results
         output(n_spins, mcs, temperature, average);
     }
+
+    cout << "analytical Eavg" << 8.*tanh(8.) << endl;
+    cout << "analytical Evar" << 8.*(1-tanh(8.)*tanh(8.)) << endl;
+    cout << "analytical Mavg" << 0 << endl;
+    cout << "analytical Mvar" << 2*(exp(8.)+2)/(3+cosh(8.)) << endl;
+    cout << "analytical Mabs average" << 2*(exp((8.)+2)/(3+cosh(8.))) << endl;
+
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file
     return 0;
