@@ -170,12 +170,7 @@ To get results that correspond well to the analytic solutions we need at least X
 \section{Larger systems}\label{sec:Monte Carlo import}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Since we have now verified that our program runs correctly we want to increase the size of the lattice. We start by increasing the number of spins to $L = 20$ in each direction.
-We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$
-
-XXXXXXXXXXXXX INSERT PLOT FOR VARIOUS EXPECTATION VALUES AS FUNCTION OF NUMBER OF CYCLES XXXXXXXXXXXXX
-
-We see that XXXX WHAT DO WE SEE XXXX. 
-
+We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is ne
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions} \label{sec:conclusions}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
