@@ -59,21 +59,34 @@ int main(int argc, char* argv[])
         for( int i = 0; i < 5; i++) average[i] = 0.;
         initialize(n_spins, temperature, spin_matrix, E, M);
         // start Monte Carlo computation
+        double counter = 0;
         for (int cycles = 1; cycles <= mcs; cycles++){
             Metropolis(n_spins, idum, spin_matrix, E, M, w);
             // update expectation values
             average[0] += E;    average[1] += E*E;
             average[2] += M;    average[3] += M*M; average[4] += fabs(M);
+            counter += 1;
+            if (counter == 1000){
+                ofile << setw(15) << setprecision(8) << cycles;
+                output(n_spins, cycles, temperature, average);
+                counter = 0;
+            }
         }
+
+        for (int i = 0; i <= mcs; i += 1000){
+
+        }
+
         // print results
-        output(n_spins, mcs, temperature, average);
+        //output(n_spins, mcs, temperature, average);
     }
 
-    cout << "analytical Eavg" << 8.*tanh(8.) << endl;
-    cout << "analytical Evar" << 8.*(1-tanh(8.)*tanh(8.)) << endl;
-    cout << "analytical Mavg" << 0 << endl;
-    cout << "analytical Mvar" << 2*(exp(8.)+2)/(3+cosh(8.)) << endl;
-    cout << "analytical Mabs average" << 2*(exp(8.)+2)/(3+cosh(8.)) << endl;
+    cout << "analytical Eavg : " << -32.*sinh(8.)/(12 + 4*cosh(8))/4 << endl;
+    cout << "analytical Evar : " << ((64.*cosh(8.)/(cosh(8.)+3))*(64.*cosh(8.)/(cosh(8.)+3))
+                                     -(-32.*sinh(8.)/(12 + 4*cosh(8)))*(-32.*sinh(8.)/(12 + 4*cosh(8))) )/4. << endl;
+    cout << "analytical Mavg : " << 0 << endl;
+    cout << "analytical Mvar : " << (8.*exp(8)+2.)/(3.+cosh(8.))/4. << endl;
+    cout << "analytical Mabs average : " << 2.*(exp(8.)+2)/(3.+cosh(8.))/4. << endl;
 
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file
