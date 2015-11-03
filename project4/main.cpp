@@ -81,12 +81,11 @@ int main(int argc, char* argv[])
         //output(n_spins, mcs, temperature, average);
     }
 
-    cout << "analytical Eavg : " << -32.*sinh(8.)/(12 + 4*cosh(8))/4 << endl;
-    cout << "analytical Evar : " << ((64.*cosh(8.)/(cosh(8.)+3))*(64.*cosh(8.)/(cosh(8.)+3))
-                                     -(-32.*sinh(8.)/(12 + 4*cosh(8)))*(-32.*sinh(8.)/(12 + 4*cosh(8))) )/4. << endl;
-    cout << "analytical Mavg : " << 0 << endl;
-    cout << "analytical Mvar : " << (8.*exp(8)+2.)/(3.+cosh(8.))/4. << endl;
-    cout << "analytical Mabs average : " << 2.*(exp(8.)+2)/(3.+cosh(8.))/4. << endl;
+    cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
+    cout << "analytical Evar : " << 64.*(1.+ 3.*cosh(8.)) / pow(3. + cosh(8.),2)/4. << endl;
+    cout << "analytical Mavg : " << 0. << endl;
+    cout << "analytical Mvar : " << 8.*(exp(8.)+1.)/(3.+cosh(8.))/4. << endl;
+    cout << "analytical Mabs average : " << 2.*(exp(8.)+2.)/(3.+cosh(8.))/4. << endl;
 
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file
