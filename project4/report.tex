@@ -164,7 +164,20 @@ All these values will prove very useful for verifying that the program simulatin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 It is now time to simulated the system using the Metropolis algorithm. The program we write computes the mean energy $E$, mean magnetization $|M|$, the specific heat $C_V$ and the susceptibility $\chi$ as functions of T. To start with we want to check that our program works correclty by checking our results against the ones for the L=2 system. We do this for temperature $T = 1$ (in units $kt/J$).
 
-To get results that correspond well to the analytic solutions we need at least XXXXXX INSERT NUMBER XXXXXX Monte Carlo cycles.
+By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magentization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}.
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecE2.png}
+ \caption{Plot shows he computed $<E>$ versus the number of Monte Carlo cycles.In this case $T=1$ (in units of $kT/J$), and L=2}
+\label{expecE2}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecM2.png}
+ \caption{Plot shows he computed $<|M|>$ versus the number of Monte Carlo cycles. In this case $T=1$ (in units of $kT/J$), and L=2}
+\label{expecM2}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Larger systems}\label{sec:Monte Carlo import}

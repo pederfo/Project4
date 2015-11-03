@@ -164,13 +164,18 @@ All these values will prove very useful for verifying that the program simulatin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 It is now time to simulated the system using the Metropolis algorithm. The program we write computes the mean energy $E$, mean magnetization $|M|$, the specific heat $C_V$ and the susceptibility $\chi$ as functions of T. To start with we want to check that our program works correclty by checking our results against the ones for the L=2 system. We do this for temperature $T = 1$ (in units $kt/J$).
 
-To get results that correspond well to the analytic solutions we need at least XXXXXX INSERT NUMBER XXXXXX Monte Carlo cycles.
+By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magentization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Larger systems}\label{sec:Monte Carlo import}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Since we have now verified that our program runs correctly we want to increase the size of the lattice. We start by increasing the number of spins to $L = 20$ in each direction.
-We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is ne
+We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$
+
+XXXXXXXXXXXXX INSERT PLOT FOR VARIOUS EXPECTATION VALUES AS FUNCTION OF NUMBER OF CYCLES XXXXXXXXXXXXX
+
+We see that XXXX WHAT DO WE SEE XXXX. 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions} \label{sec:conclusions}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
