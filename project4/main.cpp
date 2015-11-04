@@ -73,19 +73,15 @@ int main(int argc, char* argv[])
             }
         }
 
-        for (int i = 0; i <= mcs; i += 1000){
-
-        }
-
         // print results
         //output(n_spins, mcs, temperature, average);
     }
 
     cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
-    cout << "analytical Evar : " << 64.*(1.+ 3.*cosh(8.)) / pow(3. + cosh(8.),2)/4. << endl;
+    cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
     cout << "analytical Mavg : " << 0. << endl;
-    cout << "analytical Mvar : " << 8.*(exp(8.)+1.)/(3.+cosh(8.))/4. << endl;
-    cout << "analytical Mabs average : " << 2.*(exp(8.)+2.)/(3.+cosh(8.))/4. << endl;
+    cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
+    cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
 
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file

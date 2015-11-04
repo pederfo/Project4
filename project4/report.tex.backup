@@ -123,18 +123,18 @@ with $s_k = \pm 1$, $N$ is the total number of spins and $J$ is a coupling const
 \section{Analytical solution}\label{sec:analytical}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 To start with we assume that we only have two spins in each direction, such that $L = 2$, giving us a total of 4 spins.
-This gives a partition function
+This gives a partition function 
 \begin{equation}
  Z = 12 + 4cosh(8J\beta)
 \end{equation}
 where $\beta = 1/kT$.
 An expectation value for energy
 \begin{equation}
- <E> = \frac{-8Jsinh(8J\beta)}{3 + cosh(8J\beta)} \approx -8Jtanh(8J\beta).
+ <E> = -\frac{32Jsinh(8J\beta)}{Z}\frac{1}{L^2}
 \end{equation}
-A variance for the the energy
+A variance for the energy
 \begin{equation}
- \sigma_E = 768J^2 \frac{cosh(8J\beta)+1/4}{cosh(8J\beta)+ 3}.
+ \sigma_E^2 = \frac{2^{10}(1+3cosh(8J\beta))}{Z^2}\frac{1}{L^2}
 \end{equation}
 Expectation value for the magnetization
 \begin{equation}
@@ -142,19 +142,20 @@ Expectation value for the magnetization
 \end{equation}
 Expectation value for the absolute value of the magnetization
 \begin{equation}
- <|M|> = \frac{2(e^{8J\beta}+2)}{cosh(8J\beta)+3}.
+ <|M|> = \frac{8(e^{8J\beta}+2)}{Z}\frac{1}{L^2}
 \end{equation}
 Variance of the magnetization
 \begin{equation}
- \sigma_M = \frac{2(e^{8J\beta}+2)}{3+cosh(8J\beta)}.
+ \sigma_M^2 = \frac{2^5(e^{8J\beta}+1)}{Z}\frac{1}{L^2} - <|M|>^2
 \end{equation}
-Which gives us equations for specific heat capacity
+XXXXXXXXXXXXX THIS CALCULATION IS WRONG XXXXXXXXXXXXX 
+which gives us equations for specific heat capacity
 \begin{equation}
- C_V = \frac{768J^2}{kT^2} \frac{cosh(8J\beta)+1/4}{cosh(8J\beta)+ 3}
+C_V = \frac{\sigma_E^2}{kT^2}
 \end{equation}
 and magnetic susceptibility
 \begin{equation}
- \chi = \frac{1}{kT}\frac{2(e^{8J\beta}+2)}{3+cosh(8J\beta)}.
+ \chi = \frac{\sigma_M^2}{kT}
 \end{equation}
 
 All these values will prove very useful for verifying that the program simulating larger systems is running correctly.
@@ -162,9 +163,45 @@ All these values will prove very useful for verifying that the program simulatin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Simulating the L=2 system}\label{sec:simulate_analytic}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-It is now time to simulated the system using the Metropolis algorithm. The program we write computes the mean energy $E$, mean magnetization $|M|$, the specific heat $C_V$ and the susceptibility $\chi$ as functions of T. To start with we want to check that our program works correclty by checking our results against the ones for the L=2 system. We do this for temperature $T = 1$ (in units $kt/J$).
+It is now time to simulated the system using the Metropolis algorithm. The program we write computes the mean energy $<E>$, mean magnetization $<|M|>$, the specific heat $C_V$ and the susceptibility $\chi$ as functions of T. To start with we want to check that our program works correclty by checking our results against the ones for the L=2 system. We do this for temperature $T = 1$ (in units $kT/J$).
 
-By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magentization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}.
+By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magnetization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}.
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecE2.png}
+ \caption{Plot shows he computed $<E>$ versus the number of Monte Carlo cycles.In this case $T=1$ (in units of $kT/J$), and L=2}
+\label{expecE2}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecM2.png}
+ \caption{Plot shows he computed $<|M|>$ versus the number of Monte Carlo cycles. In this case $T=1$ (in units of $kT/J$), and L=2}
+\label{expecM2}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecEM2.png}
+ \caption{The figure shows the expectation values for energy and the absolute value of the magnetization. Note that with such a low temperature the values stabilize from the start, and the variations are too small to see at this scale.}
+\label{expecEM2}
+\end{figure}
+
+Comparing the output from the program with the values we calculated earlier gives the following table
+\begin{table}
+ \begin{tabular}{|c|c|c|}
+  \hline
+  &Analytical &Numerical \\
+  \hline
+  $<E>$ &-1.996 & -1.996\\
+  \hline
+  $<|M|>$& 0.999& 0.999\\
+  \hline
+  $C_V$ & 0.032& 0.032\\
+  \hline
+  $\chi$ & 2.996& 0.004\\
+  \hline
+ \end{tabular}
+
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Larger systems}\label{sec:Monte Carlo import}
