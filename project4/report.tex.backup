@@ -130,11 +130,11 @@ This gives a partition function
 where $\beta = 1/kT$.
 An expectation value for energy
 \begin{equation}
- <E> = -\frac{32Jsinh(8J\beta)}{Z}\frac{1}{L^2}
+ <E> = -\frac{32Jsinh(8J\beta)}{Z}
 \end{equation}
 A variance for the energy
 \begin{equation}
- \sigma_E^2 = \frac{2^{10}(1+3cosh(8J\beta))}{Z^2}\frac{1}{L^2}
+ \sigma_E^2 = \frac{2^{10}(1+3cosh(8J\beta))}{Z^2}
 \end{equation}
 Expectation value for the magnetization
 \begin{equation}
@@ -142,14 +142,12 @@ Expectation value for the magnetization
 \end{equation}
 Expectation value for the absolute value of the magnetization
 \begin{equation}
- <|M|> = \frac{8(e^{8J\beta}+2)}{Z}\frac{1}{L^2}
+ <|M|> = \frac{8(e^{8J\beta}+2)}{Z}
 \end{equation}
 Variance of the magnetization
 \begin{equation}
- \sigma_M^2 = \frac{2^5(e^{8J\beta}+1)}{Z}\frac{1}{L^2} - <|M|>^2
+ \sigma_M^2 = \frac{2^5(e^{8J\beta}+1)}{Z} - <|M|>^2
 \end{equation}
-XXXXXXXXXXXXX THIS CALCULATION IS WRONG XXXXXXXXXXXXX 
-which gives us equations for specific heat capacity
 \begin{equation}
 C_V = \frac{\sigma_E^2}{kT^2}
 \end{equation}
@@ -197,11 +195,19 @@ Comparing the output from the program with the values we calculated earlier give
   \hline
   $C_V$ & 0.032& 0.032\\
   \hline
-  $\chi$ & 2.996& 0.004\\
+  $\chi$ & 0.004& 0.004\\
   \hline
  \end{tabular}
-
+\caption{Table of values from the analytial calculations for a system with L=2 and T = 1 in units of (kT/J). Note the precision of the numerical result.}
 \end{table}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{C_VandChiL2.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles.}
+\label{C_VandChiL2}
+\end{figure}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Larger systems}\label{sec:Monte Carlo import}

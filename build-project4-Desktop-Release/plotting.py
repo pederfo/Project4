@@ -17,7 +17,7 @@ legend(loc='best')
 ylim([-2.5,1.5])
 #show()
 
-C_V = data[3]/data[1]*data[1]
+C_V = data[3]/(data[1]*data[1])
 chi = data[5]/data[1]
 figure(1)
 plot(data[0],C_V,label=r'$C_V$')

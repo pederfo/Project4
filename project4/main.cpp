@@ -77,11 +77,11 @@ int main(int argc, char* argv[])
         //output(n_spins, mcs, temperature, average);
     }
 
-    cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
-    cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
-    cout << "analytical Mavg : " << 0. << endl;
-    cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
-    cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
+//    cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
+//    cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
+//    cout << "analytical Mavg : " << 0. << endl;
+//    cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
+//    cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
 
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file
@@ -110,10 +110,17 @@ void read_input(int& n_spins, int& mcs, double& initial_temp,
 void initialize(int n_spins, double temperature, int **spin_matrix,
                 double& E, double& M)
 {
+    long idum;
+    idum = -1;
+    double randomnumber;
     // setup spin matrix and intial magnetization
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
-            spin_matrix[y][x] = 1; // spin orientation for the ground state
+            //if (temperature <1.5) spin_matrix[y][x] = 1; // spin orientation for the ground state
+            //spin_matrix[y][x] = 1; // spin orientation for the ground state
+            randomnumber = ran0(&idum);
+            if(randomnumber >= 0.5) spin_matrix[y][x] = 1;
+            if(randomnumber < 0.5) spin_matrix[y][x] = -1;
             M +=  (double) spin_matrix[y][x];
         }
     }
