@@ -36,8 +36,8 @@ int main(int argc, char* argv[])
     long idum;
     int **spin_matrix, n_spins, mcs, my_rank, numprocs;
     double w[17], average[5], total_average[5], initial_temp, final_temp, E, M, temp_step;
-    double accepted = 0;
-    double acceptedmoves = 0;
+    //double accepted = 0;
+    //double acceptedmoves = 0;
 
     // Read in output file, abort if there are too few command-line arguments
     //  MPI initializations
@@ -156,15 +156,15 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
 {
     long idum;
     idum = -1;
-    //double randomnumber;
+    double randomnumber;
     // setup spin matrix and intial magnetization
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
-            //if (temperature <1.5) spin_matrix[y][x] = 1; // spin orientation for the ground state
-            spin_matrix[y][x] = 1; // spin orientation for the ground state
-            //randomnumber = ran0(&idum);
-            //if(randomnumber >= 0.5) spin_matrix[y][x] = 1;
-            //if(randomnumber < 0.5) spin_matrix[y][x] = -1;
+            if (temperature <1.5) spin_matrix[y][x] = 1; // spin orientation for the ground state
+            //spin_matrix[y][x] = 1; // spin orientation for the ground state
+            randomnumber = ran0(&idum);
+            if(randomnumber >= 0.5) spin_matrix[y][x] = 1;
+            if(randomnumber < 0.5) spin_matrix[y][x] = -1;
             M +=  (double) spin_matrix[y][x];
         }
     }
