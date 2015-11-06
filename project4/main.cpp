@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iomanip>
 #include "lib.h"
+
 using namespace  std;
 
 ofstream ofile;
@@ -24,7 +25,7 @@ void read_input(int&, int&, double&, double&, double&);
 // Function to initialise energy and magnetization
 void initialize(int, double, int **, double&, double&);
 // The metropolis algorithm
-void Metropolis(int, long&, int **, double&, double&, double *);
+void Metropolis(int, long&, int **, double&, double&, double *,double&);
 // prints to file the results of the calculations
 void output(int, int, double, double *);
 
@@ -34,6 +35,8 @@ int main(int argc, char* argv[])
     long idum;
     int **spin_matrix, n_spins, mcs;
     double w[17], average[5], initial_temp, final_temp, E, M, temp_step;
+    double accepted = 0;
+    double acceptedmoves = 0;
 
     // Read in output file, abort if there are too few command-line arguments
     if( argc <= 1 ){
@@ -48,8 +51,11 @@ int main(int argc, char* argv[])
     //    Read in initial values such as size of lattice, temp and cycles
     read_input(n_spins, mcs, initial_temp, final_temp, temp_step);
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
+    int startcount = 300000;
+    double energies[mcs-startcount-1];
     idum = -1; // random starting point
     for ( double temperature = initial_temp; temperature <= final_temp; temperature+=temp_step){
+        cout << "Running calculation for temperature = " << temperature << endl;
         //    initialise energy and magnetization
         E = M = 0.;
         // setup array for possible energy changes
@@ -59,30 +65,37 @@ int main(int argc, char* argv[])
         for( int i = 0; i < 5; i++) average[i] = 0.;
         initialize(n_spins, temperature, spin_matrix, E, M);
         // start Monte Carlo computation
-        double counter = 0;
+        //double counter = 0;
         for (int cycles = 1; cycles <= mcs; cycles++){
-            Metropolis(n_spins, idum, spin_matrix, E, M, w);
+            Metropolis(n_spins, idum, spin_matrix, E, M, w,accepted);
             // update expectation values
             average[0] += E;    average[1] += E*E;
             average[2] += M;    average[3] += M*M; average[4] += fabs(M);
-            counter += 1;
-            if (counter == 1000){
-                ofile << setw(15) << setprecision(8) << cycles;
-                output(n_spins, cycles, temperature, average);
-                counter = 0;
+            //counter += 1;
+            acceptedmoves += accepted;
+            if(cycles > startcount){
+                energies[cycles-startcount-1] = E;
+                ofile << setw(15) << energies[cycles-startcount-1] << endl;
             }
+            //if (counter == 1000){
+            //ofile << setw(15) << setprecision(8) << cycles;
+            //output(n_spins, cycles, temperature, average);
+            //counter = 0;
+            //}
         }
 
         // print results
         //output(n_spins, mcs, temperature, average);
     }
 
-//    cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
-//    cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
-//    cout << "analytical Mavg : " << 0. << endl;
-//    cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
-//    cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
-
+    //    cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
+    //    cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
+    //    cout << "analytical Mavg : " << 0. << endl;
+    //    cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
+    //    cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
+    cout << "Accepted moves: "<< acceptedmoves <<endl;
+    cout << "Total moves: "<<mcs*n_spins*n_spins << endl;
+    cout << "Percent accepted: "<<(double)acceptedmoves/(double)(mcs*n_spins*n_spins)*100. << endl;
     free_matrix((void **) spin_matrix); // free memory
     ofile.close();  // close output file
     return 0;
@@ -112,15 +125,15 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
 {
     long idum;
     idum = -1;
-    double randomnumber;
+    //double randomnumber;
     // setup spin matrix and intial magnetization
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
             //if (temperature <1.5) spin_matrix[y][x] = 1; // spin orientation for the ground state
-            //spin_matrix[y][x] = 1; // spin orientation for the ground state
-            randomnumber = ran0(&idum);
-            if(randomnumber >= 0.5) spin_matrix[y][x] = 1;
-            if(randomnumber < 0.5) spin_matrix[y][x] = -1;
+            spin_matrix[y][x] = 1; // spin orientation for the ground state
+            //randomnumber = ran0(&idum);
+            //if(randomnumber >= 0.5) spin_matrix[y][x] = 1;
+            //if(randomnumber < 0.5) spin_matrix[y][x] = -1;
             M +=  (double) spin_matrix[y][x];
         }
     }
@@ -134,9 +147,10 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 }// end function initialise
 
-void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w)
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w,double &accepted)
 {
     // loop over all spins
+    accepted = 0;
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
             int ix = (int) (ran1(&idum)*(double)n_spins);
@@ -150,6 +164,7 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
                 spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
                 M += (double) 2*spin_matrix[iy][ix];
                 E += (double) deltaE;
+                accepted +=1;
             }
         }
     }

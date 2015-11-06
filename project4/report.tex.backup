@@ -208,16 +208,97 @@ Comparing the output from the program with the values we calculated earlier give
 \end{figure}
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Larger systems}\label{sec:Monte Carlo import}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Since we have now verified that our program runs correctly we want to increase the size of the lattice. We start by increasing the number of spins to $L = 20$ in each direction.
-We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$
+We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$. Figure \ref{expecEM20} show the expectation values for energy and mangetization, while figure \ref{C_VandChiL20} shows the susceptibility and the specific heat. We see that we need about 200,000 Monte Carlo cycles for the values to stabilize.
 
-XXXXXXXXXXXXX INSERT PLOT FOR VARIOUS EXPECTATION VALUES AS FUNCTION OF NUMBER OF CYCLES XXXXXXXXXXXXX
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecEM20.png}
+ \caption{The figure shows the expectation values for energy and the absolute value of the magnetization for the case with $L=20$ at $T = 1$ (still in units of $kT/J$). Note that with such a low temperature the values stabilize from the start, and the variations are too small to see at this scale exactly as we saw for the $L=2$ case.}
+\label{expecEM20}
+\end{figure}
 
-We see that XXXX WHAT DO WE SEE XXXX. 
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{C_VandChiL20.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins.}
+\label{C_VandChiL20}
+\end{figure}
+
+So far we have only looked at the evolution of a system that starts in an orderes state with all spins pointing up.
+Next we study the same system, but this time we start in a random state. Figure \ref{disorderedL20T1} shows the evolution of this system. If one compares this to the same system with an ordered intial state (figure \ref{C_VandChiL20}) the difference is remarkable.(The expectation values stabilize too quickly to see any difference at this temperature.)
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{disorderedL20T1.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins. This time with a disordered initial state, and $T=1$.}
+\label{disorderedL20T1}
+\end{figure}
+
+The next step is to increase the temperature. In figure \ref{orderedL20T24} and \ref{disorderedL20T24} you can see the magnetization and specific heat with an ordered, and a disordered initial state using $T=24$.
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{orderedL20T24.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins. This time with an ordered initial state, and $T=2.4$.}
+\label{orderedL20T24}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{disorderedL20T24.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins. This time with a disordered initial state, and $T=2.4$.}
+\label{disorderedL20T24}
+\end{figure}
+Note that at this temperature the figures become almost identical. There is actually a small difference in the beginning but it changes so quickly that it is nearly impossible to see with the eye.
+
+In our algoritm there are two processes competing. There is the constant attempt to reach a lower energy state, and there is the metropolis part which accepts moves to higher energies if a random number we pick is lower than $exp(-\Delta_E\beta)$.
+
+This means that if we increase the temperature the probability of reaching a high energy state gets lower and lower. Because of this there is a tansition point where we go from having a lattice that is magnitized to one which is not. Note that increasing the temperature further has noe effect other than minimizing the magnetization even further. To study this we plot the expectation values for energy and magnetization, as well as the specific heat and the susceptibility for $T=[2.1,2.7]$. The first attempt uses $L=20$. The results of this can be seen in figure \ref{C_VandChiL_20_T} and \ref{expecEML20T}. We see that the susceptibility goes us up between $T=2.3$ and $T=2.4$. This could indicate a phase transition. Looking at the expectation value for the magnetization this would seem to be the case. We should do the same with a larger lattice to be certain.
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecEML20T.png}
+ \caption{Plot of the expectation values for magntization and energy for the temperature range $T=[2.1,2.7]$. In this case our lattice has size $L=20$. This plot was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{expecEML20T}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{C_VandChi_L20_T.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function temperature. In this case $L=20$, corresponding to 400 spins.This was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{C_VandChiL_20_T}
+\end{figure}
+
+Plotting exactly the same as before, still with 1,000,000 Monte Carlo cycles for each temperature step for $L=40$ results in figure \ref{C_VandChiL_40_T} and \ref{expecEML40T}. Here the spike in susceptibility is very clear, and the change in magnetization becomes more sudden
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecEML40T.png}
+ \caption{Plot of the expectation values for magntization and energy for the temperature range $T=[2.1,2.7]$. In this case our lattice has size $L=40$. This plot was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{expecEML40T}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{C_VandChi_L40_T.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function temperature. In this case $L=40$, corresponding to 400 spins.This was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{C_VandChiL_40_T}
+\end{figure}
+
+We also include the same figures for $L=60$ (figure \ref{C_VandChiL_60_T} and \ref{expecEML60T}) and $L=80$ (figure \ref{C_VandChiL_80_T} and \ref{expecEML80T}).
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{expecEML60T.png}
+ \caption{Plot of the expectation values for magntization and energy for the temperature range $T=[2.1,2.7]$. In this case our lattice has size $L=60$. This plot was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{expecEML60T}
+\end{figure}
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{C_VandChi_L60_T.png}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function temperature. In this case $L=40$, corresponding to 400 spins.This was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}
+\label{C_VandChiL_60_T}
+\end{figure}
+
+
+
+Phase transitions:
+The Ising model was motivated by the physical phenomenon ferromagnetism. In order to have ferromagnetism, atoms must have permanent magnetic moments induced by a large number of electrons which spin in the same direction. As the temperature  increase, the electron spins gets distorted and the magnetism is reduced. In contrast, decreasing the temperature will induce magnetic behavior. The electrons have stronger influence on its neighbours, and the spins align. Such transition between magnetic and non magnetic properties in a system is a phase transition. It happens at a certain temperature $T_C$. Below $T_C$ we have magnetic behaviour. The Ising model allows identification of such transitions.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions} \label{sec:conclusions}
