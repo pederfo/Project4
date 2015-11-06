@@ -307,8 +307,23 @@ We also include the same figures for $L=60$ (figure \ref{C_VandChiL_60_T} and \r
 \end{figure}
 
 
-Phase transitions:
+
 The Ising model was motivated by the physical phenomenon ferromagnetism. In order to have ferromagnetism, atoms must have permanent magnetic moments induced by a large number of electrons which spin in the same direction. As the temperature  increase, the electron spins gets distorted and the magnetism is reduced. In contrast, decreasing the temperature will induce magnetic behavior. The electrons have stronger influence on its neighbours, and the spins align. Such transition between magnetic and non magnetic properties in a system is a phase transition. It happens at a certain temperature $T_C$. Below $T_C$ we have magnetic behaviour. The Ising model allows identification of such transitions.
+
+
+The critical temperature at an infinitely large system, $L=\infty$, can be calculated by the relation to the finite system L 
+
+\begin{equation}
+T_C(L) - T_C(L=\infty) = aL^{-1/\nu}
+\end{equation}
+
+where a is a constant. The exact solution value of the critical temperature was obtained analytically by Lars Onsager and was found to be $T_C = 2.269$. Using the equation above, we will find our own exact solution. Since we know $T_C(L)$ for different values of L we can obtain two equations and from there find a as an expression of $T_C(L=0)$. Thus we end up with the equation 
+
+\begin{equation}
+ T_C(\infty) = \frac{T_C(L_1)L_1 - T_C(L_2)L_2}{L_1 - L_2} = 2.283
+\end{equation}
+
+Our own exact value of the critical temperature is fairly close as Lars Onsager found it to be.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
