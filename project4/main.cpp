@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
       ofile.open(outfilename);
     }
 
-    n_spins = 60; mcs = 1000000;  initial_temp = 2.1; final_temp = 2.7; temp_step =0.01;
+    n_spins = 80; mcs = 1000000;  initial_temp = 2.1; final_temp = 2.7; temp_step =0.01;
     /*
     Determine number of intervall which are used by all processes
     myloop_begin gives the starting point on process my_rank
