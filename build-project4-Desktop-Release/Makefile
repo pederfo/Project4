@@ -11,12 +11,12 @@ MAKEFILE      = Makefile
 ####### Compiler, tools and options
 
 CC            = mpicc
-CXX           = mpicxx
+CXX           = mpic++
 DEFINES       = 
 CFLAGS        = -m64 -pipe -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi -pthread -O2 -Wall -W -fPIE $(DEFINES)
 CXXFLAGS      = -m64 -pipe -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi -pthread -DMPICH_IGNORE_CXX_SEEK -O2 -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi -pthread -DMPICH_IGNORE_CXX_SEEK -std=c++0x -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../project4 -I.
-LINK          = mpicxx
+LINK          = mpic++
 LFLAGS        = -m64 -pthread -L/usr//lib -L/usr/lib/openmpi/lib -lmpi_cxx -lmpi -ldl -lhwloc -Wl,-O1
 LIBS          = $(SUBLIBS)  
 AR            = ar cqs
