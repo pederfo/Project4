@@ -5,7 +5,7 @@ rc('font',**{'family':'serif'}) # This is for Latex writing
 
 #Part 1
 
-data = loadtxt("mc1millL60T0.001.dat",unpack=True);
+data = loadtxt("mc1millL80T0.01.dat",unpack=True);
 figure(0)
 plot(data[0],data[1],label=r'$<E>$')
 plot(data[0],data[5],label=r'$<|M|>$')

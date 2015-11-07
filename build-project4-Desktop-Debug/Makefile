@@ -10,14 +10,14 @@ MAKEFILE      = Makefile
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
+CC            = mpicc
+CXX           = mpic++
 DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG
-CFLAGS        = -m64 -pipe -g -Wall -W -fPIE $(DEFINES)
-CXXFLAGS      = -m64 -pipe -g -std=c++0x -Wall -W -fPIE $(DEFINES)
+CFLAGS        = -m64 -pipe -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi -pthread -g -Wall -W -fPIE $(DEFINES)
+CXXFLAGS      = -m64 -pipe -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi -pthread -DMPICH_IGNORE_CXX_SEEK -g -std=c++0x -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../project4 -I.
-LINK          = g++
-LFLAGS        = -m64
+LINK          = mpic++
+LFLAGS        = -m64 -pthread -L/usr//lib -L/usr/lib/openmpi/lib -lmpi_cxx -lmpi -ldl -lhwloc
 LIBS          = $(SUBLIBS)  
 AR            = ar cqs
 RANLIB        = 
