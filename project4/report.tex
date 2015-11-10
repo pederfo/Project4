@@ -163,7 +163,7 @@ All these values will prove very useful for verifying that the program simulatin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 It is now time to simulated the system using the Metropolis algorithm. The program we write computes the mean energy $<E>$, mean magnetization $<|M|>$, the specific heat $C_V$ and the susceptibility $\chi$ as functions of T. To start with we want to check that our program works correclty by checking our results against the ones for the L=2 system. We do this for temperature $T = 1$ (in units $kT/J$).
 
-By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magnetization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}.
+By looking at the expectation values versus the number of Monte Carlo cycles we can estimate how many cycles are needed before we get a value close to the analytical one. Depending on what one defines as a ``good'' approximation we get either a very good match from the beginning, or a good match after about 300,000 cycles. Note that both expectation values for energy and magnetization vary only by one thousandth. See figures \ref{expecE2} and \ref{expecM2}. We include figure \ref{expecEM2} so one can see how stable the expectation values are from the beginning. Figure \ref{C_VandChiL2} confirms what we saw in the plots for magnetization and energy respectively, namely that the values stabilize after approximately 300,000 cycles.
 
 \begin{figure}
  \includegraphics[width=.49\textwidth]{expecE2.png}
@@ -183,7 +183,7 @@ By looking at the expectation values versus the number of Monte Carlo cycles we 
 \label{expecEM2}
 \end{figure}
 
-Comparing the output from the program with the values we calculated earlier gives the following table
+Comparing the output from the program with the values we calculated earlier gives the table \ref{tab1}.
 \begin{table}
  \begin{tabular}{|c|c|c|}
   \hline
@@ -199,6 +199,7 @@ Comparing the output from the program with the values we calculated earlier give
   \hline
  \end{tabular}
 \caption{Table of values from the analytial calculations for a system with L=2 and T = 1 in units of (kT/J). Note the precision of the numerical result.}
+\label{tab1}
 \end{table}
 
 \begin{figure}
@@ -223,7 +224,7 @@ We did not study how many cycles were needed to reach the most likely state in t
 
 \begin{figure}
  \includegraphics[width=.49\textwidth]{C_VandChiL20.png}
- \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins.}
+ \caption{Plot of specific heat and the magnetic susceptibility as a function of Monte Carlo cycles. In this case $L=20$, corresponding to 400 spins. And $T = 1$. The startinig state here is orderd with all spins pointing up.}
 \label{C_VandChiL20}
 \end{figure}
 
@@ -266,7 +267,7 @@ This means that if we increase the temperature the probability of reaching a hig
 \label{C_VandChiL_20_T}
 \end{figure}
 
-Plotting exactly the same as before, still with 1,000,000 Monte Carlo cycles for each temperature step for $L=40$ results in figure \ref{C_VandChiL_40_T} and \ref{expecEML40T}. Here the spike in susceptibility is very clear, and the change in magnetization becomes more sudden
+Plotting exactly the same as before, still with 1,000,000 Monte Carlo cycles for each temperature step for $L=40$ results in figure \ref{C_VandChiL_40_T} and \ref{expecEML40T}. Here the spike in susceptibility is very clear, and the change in magnetization becomes more sudden.
 
 \begin{figure}
  \includegraphics[width=.49\textwidth]{expecEML40T.png}
@@ -322,8 +323,8 @@ where a is a constant. The exact solution value of the critical temperature was 
 \begin{equation}
  T_C(\infty) = \frac{T_C(L_1)L_1 - T_C(L_2)L_2}{L_1 - L_2} = 2.283
 \end{equation}
-
-Our own exact value of the critical temperature is fairly close as Lars Onsager found it to be.
+where we have used that $T_C(L=20)= 2.35$ and $T_C(L=80) =2.30$. Temperature is still given in units kT/J. These temperatures are read from their respective plots.
+Our own exact value of the critical temperature is fairly close to what Lars Onsager found it to be.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
