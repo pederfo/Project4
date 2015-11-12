@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
         MPI_Reduce(&acceptedmoves[counter], &accepted_total[counter], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
         // print results
         if ( my_rank == 0) {
-          ofile << setw(15) << setprecision(8) << accepted_total[counter];
+          ofile << setw(15) << setprecision(8) << accepted_total[counter] << endl;
           //output(n_spins, mcs, temperature, total_average);
             }
         counter += 1;
