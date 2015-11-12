@@ -237,7 +237,7 @@ Next we study the same system, but this time we start in a random state. Figure 
 \label{disorderedL20T1}
 \end{figure}
 
-The next step is to increase the temperature. In figure \ref{orderedL20T24} and \ref{disorderedL20T24} you can see the magnetization and specific heat with an ordered, and a disordered initial state using $T=24$.
+The next step is to increase the temperature. In figure \ref{orderedL20T24} and \ref{disorderedL20T24} you can see the magnetization and specific heat with an ordered, and a disordered initial state using $T=2.4$.
 
 \begin{figure}
  \includegraphics[width=.49\textwidth]{orderedL20T24.png}
@@ -252,9 +252,34 @@ The next step is to increase the temperature. In figure \ref{orderedL20T24} and 
 \end{figure}
 Note that at this temperature the figures become almost identical. There is actually a small difference in the beginning but it changes so quickly that it is nearly impossible to see with the eye.
 
-In our algoritm there are two processes competing. There is the constant attempt to reach a lower energy state, and there is the metropolis part which accepts moves to higher energies if a random number we pick is lower than $exp(-\Delta_E\beta)$.
 
-This means that if we increase the temperature the probability of reaching a high energy state gets lower and lower. Because of this there is a tansition point where we go from having a lattice that is magnitized to one which is not. Note that increasing the temperature further has noe effect other than minimizing the magnetization even further. To study this we plot the expectation values for energy and magnetization, as well as the specific heat and the susceptibility for $T=[2.1,2.7]$. The first attempt uses $L=20$. The results of this can be seen in figure \ref{C_VandChiL_20_T} and \ref{expecEML20T}. We see that the susceptibility goes us up between $T=2.3$ and $T=2.4$. This could indicate a phase transition. Looking at the expectation value for the magnetization this would seem to be the case. We should do the same with a larger lattice to be certain.
+In our algoritm there are two processes competing. There is the constant attempt to reach a lower energy state, and there is the metropolis part which accepts moves to higher energies if a random number we pick is lower than $exp(-\Delta_E\beta)$.
+Because of this it would be interesting to see how many configurations that are accepted for a given temperature. This is plotted in figure \ref{acceptconfig}
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{acceptconfig.png}
+ \caption{The percentage of accepted configurations for a given temperature.In this case we used 1,000,000 Monte Carlo cycles for every temperature, and $L=20$.}
+\label{acceptconfig}
+\end{figure}
+
+The probability P(E) of being in state E can be computed by counting the number of times a specific energy state appears in the simulation. The histograms in figure \ref{prob1} and \ref{prob2} shows the probability of each energy state for temperatures $T = 1$, and $T = 2.4$.
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{prob_T21_MC1mill_afterthermal.png}
+ \caption{The histogram shows the probability distribution of energy states for $T=2.1$.}
+\label{prob1}
+\end{figure}
+
+
+\begin{figure}
+ \includegraphics[width=.49\textwidth]{prob_T24_MC1mill_afterthermal.png}
+ \caption{The percentage of accepted configurations for a given temperature.In this case we used 1,000,000 Monte Carlo cycles for every temperature, and $L=20$.}
+\label{prob2}
+\end{figure}
+
+
+
+
+This means that if we increase the temperature the probability of reaching a high energy state gets lower and lower. Because of this there is a tansition point where we go from having a lattice that is magnitized to one which is not. Note that increasing the temperature further has no effect other than minimizing the magnetization even further. To study this we plot the expectation values for energy and magnetization, as well as the specific heat and the susceptibility for $T=[2.1,2.7]$. The first attempt uses $L=20$. The results of this can be seen in figure \ref{C_VandChiL_20_T} and \ref{expecEML20T}. We see that the susceptibility goes up between $T=2.3$ and $T=2.4$. This could indicate a phase transition. Looking at the expectation value for the magnetization this would seem to be the case. We should do the same with a larger lattice to be certain.
 \begin{figure}
  \includegraphics[width=.49\textwidth]{expecEML20T.png}
  \caption{Plot of the expectation values for magntization and energy for the temperature range $T=[2.1,2.7]$. In this case our lattice has size $L=20$. This plot was made with a temperature step 0.01, and 1,000,000 Monte Carlo cycles for each step.}

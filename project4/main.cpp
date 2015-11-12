@@ -26,7 +26,7 @@ void read_input(int&, int&, double&, double&, double&);
 // Function to initialise energy and magnetization
 void initialize(int, double, int **, double&, double&);
 // The metropolis algorithm
-void Metropolis(int, long&, int **, double&, double&, double *,int);
+void Metropolis(int, long&, int **, double&, double&, double *, int &);
 // prints to file the results of the calculations
 void output(int, int, double, double *);
 
@@ -52,11 +52,13 @@ int main(int argc, char* argv[])
       ofile.open(outfilename);
     }
 
-    n_spins = 20; mcs = 1000000;  initial_temp = 2.1; final_temp = 2.7; temp_step =0.01;
+    n_spins = 20; mcs = 4000000;  initial_temp = 1; final_temp = 1; temp_step =0.01;
+
+
     int size = (final_temp-initial_temp)/temp_step;
-    double accepted;
-    double acceptedmoves[size];
-    double accepted_total[size];
+    int accepted = 0;
+    int acceptedmoves[size];
+    int accepted_total[size];
     /*
     Determine number of intervall which are used by all processes
     myloop_begin gives the starting point on process my_rank
@@ -75,12 +77,12 @@ int main(int argc, char* argv[])
     //Allocate memory for spin matrix
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
 
-    //int startcount = 300000;
+    int startcount = 300000/no_intervalls;
     //int counter[size];
     //for (int i = 0; i <= size; i++):
     //    counter
     int counter=0;
-    //double energies[mcs-startcount-1];
+    double energies[mcs];
     idum = -1-my_rank; // random starting point
     for ( double temperature = initial_temp; temperature <= final_temp; temperature+=temp_step){
         cout << "Running calculation for temperature = " << temperature << endl;
@@ -104,17 +106,19 @@ int main(int argc, char* argv[])
             average[2] += M;    average[3] += M*M; average[4] += fabs(M);
 
             acceptedmoves[counter] += accepted;
+            //cout << accepted << endl;
             //if(cycles > startcount){
-                //energies[cycles-startcount-1] = E;
-                //ofile << setw(15) << energies[cycles-startcount-1] << endl;
+            //    energies[my_loop_begin+startcount-1] = E;
+            //    ofile << setw(15) << energies[my_loop_begin+startcount-1] << endl;
             //}
             //if (counter == 1000){
             //ofile << setw(15) << setprecision(8) << cycles;
             //output(n_spins, cycles, temperature, average);
             //counter = 0;
             //}
+            accepted = 0;
         }
-        accepted = 0;
+
         //Find total_average
         for( int i =0; i < 5; i++){
           MPI_Reduce(&average[i], &total_average[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -189,7 +193,7 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 }// end function initialise
 
-void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w,int accepted)
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, int &accepted)
 {
     // loop over all spins
     for(int y =0; y < n_spins; y++) {
