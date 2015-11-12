@@ -26,7 +26,7 @@ void read_input(int&, int&, double&, double&, double&);
 // Function to initialise energy and magnetization
 void initialize(int, double, int **, double&, double&);
 // The metropolis algorithm
-void Metropolis(int, long&, int **, double&, double&, double *, unsigned long &);
+void Metropolis(int, long&, int **, double&, double&, double *, int &);
 // prints to file the results of the calculations
 void output(int, int, double, double *);
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     char *outfilename;
     long idum;
     int **spin_matrix, n_spins, mcs, my_rank, numprocs;
-    double w[17], average[5], initial_temp, final_temp, E, M, temp_step;
+    double w[17], average[5], total_average[5], initial_temp, final_temp, E, M, temp_step;
 
     // Read in output file, abort if there are too few command-line arguments
     //  MPI initializations
@@ -52,19 +52,22 @@ int main(int argc, char* argv[])
         ofile.open(outfilename);
     }
 
-    n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.1;
-
-    unsigned long accepted = 0;
-    unsigned long acceptedmoves[numprocs];
-    for( int i = 0; i < numprocs; i++) acceptedmoves[i] = 0.;
+    n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.1; temp_step =0.025;
 
 
-
+    int size = (final_temp-initial_temp)/temp_step;
+    int accepted = 0;
+    int acceptedmoves[size];
+    int accepted_total[size];
     /*
     Determine number of intervall which are used by all processes
     myloop_begin gives the starting point on process my_rank
     myloop_end gives the end point for summation on process my_rank
     */
+    int no_intervalls = mcs/numprocs;
+    int my_loop_begin = my_rank*no_intervalls + 1;
+    int my_loop_end = (my_rank+1)*no_intervalls;
+    if ( (my_rank == numprocs-1) &&( my_loop_end < mcs) ) my_loop_end = mcs;
 
     // broadcast to all nodes common variables
     MPI_Bcast (&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -74,13 +77,14 @@ int main(int argc, char* argv[])
     //Allocate memory for spin matrix
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
 
-    double my_temp_start = initial_temp + (my_rank)*temp_step;
-    double my_temp_end = initial_temp + (my_rank+1)*temp_step;
-
-    int startcount = 300000;
+    int startcount = 0;
+    //int counter[size];
+    //for (int i = 0; i <= size; i++):
+    //    counter
+    int counter=0;
     //double energies[mcs];
     idum = -1-my_rank; // random starting point
-    for ( double temperature = my_temp_start; temperature < my_temp_end; temperature+=temp_step){
+    for ( double temperature = initial_temp; temperature <= final_temp; temperature+=temp_step){
         cout << "Running calculation for temperature = " << temperature << endl;
         //    initialise energy and magnetization
         E = M = 0.;
@@ -89,18 +93,23 @@ int main(int argc, char* argv[])
         for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature);
         // initialise array for expectation values
         for( int i = 0; i < 5; i++) average[i] = 0.;
+        for( int i = 0; i < 5; i++) total_average[i] = 0.;
         initialize(n_spins, temperature, spin_matrix, E, M);
 
+
         // start Monte Carlo computation
-        for (int cycles = 0; cycles <= mcs; cycles++){
+        for (int cycles = my_loop_begin; cycles <= my_loop_end; cycles++){
             Metropolis(n_spins, idum, spin_matrix, E, M, w,accepted);
             // update expectation values
             average[0] += E;    average[1] += E*E;
             average[2] += M;    average[3] += M*M; average[4] += fabs(M);
-            if(cycles >= startcount){
+
+
+            //cout << accepted << endl;
+            if(cycles > startcount){
                 //    energies[my_loop_begin+startcount-1] = E;
                 //    ofile << setw(15) << energies[my_loop_begin+startcount-1] << endl;
-                acceptedmoves[my_rank] += accepted;
+                acceptedmoves[counter] += accepted;
             }
             //if (counter == 1000){
             //ofile << setw(15) << setprecision(8) << cycles;
@@ -110,16 +119,20 @@ int main(int argc, char* argv[])
             accepted = 0;
         }
 
-    }
-    unsigned long acceptedmoves_global[numprocs];
-    for( int i = 0; i < numprocs; i++) acceptedmoves_global[i] = 0.;
-
-    MPI_Allreduce(acceptedmoves,acceptedmoves_global,numprocs,MPI_UNSIGNED_LONG,MPI_SUM,MPI_COMM_WORLD);
-    if(my_rank==0){
-        for(int i=0;i<8;i++){
-            ofile << setw(15) << setprecision(8) << initial_temp + i*temp_step <<"\t"<< acceptedmoves_global[i] << endl;
+        //Find total_average
+        for( int i =0; i < 5; i++){
+            MPI_Reduce(&average[i], &total_average[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
         }
+        //Find total accepted moves
+        MPI_Reduce(&acceptedmoves[counter], &accepted_total[counter], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        // print results
+        if ( my_rank == 0) {
+            ofile << setw(15) << setprecision(8) << accepted_total[counter] << endl;
+            //output(n_spins, mcs, temperature, total_average);
+        }
+        counter += 1;
     }
+
     //cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
     //cout << "analytical Evar : " << 1024.*(1.+ 3.*cosh(8.)) / pow(12. + 4*cosh(8.),2)/4. << endl;
     //cout << "analytical Mavg : " << 0. << endl;
@@ -182,7 +195,7 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 }// end function initialise
 
-void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, unsigned long &accepted)
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, int &accepted)
 {
     // loop over all spins
     for(int y =0; y < n_spins; y++) {
