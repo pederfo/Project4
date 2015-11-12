@@ -52,12 +52,7 @@ int main(int argc, char* argv[])
         ofile.open(outfilename);
     }
 
-    n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.1;
-
-    unsigned long accepted = 0;
-    unsigned long acceptedmoves[numprocs];
-    for( int i = 0; i < numprocs; i++) acceptedmoves[i] = 0.;
-
+    n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.01;
 
 
     /*
@@ -73,23 +68,44 @@ int main(int argc, char* argv[])
     MPI_Bcast (&temp_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     //Allocate memory for spin matrix
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
+    bool extra = false;
+    int num_temps = (final_temp - initial_temp)/temp_step+ 1;
 
-    double my_temp_start = initial_temp + (my_rank)*temp_step;
-    double my_temp_end = initial_temp + (my_rank+1)*temp_step;
+    int my_n = num_temps/numprocs;
+    int rest = num_temps%numprocs;
+    int startindex = 0;
+    if(my_rank < rest){
+        my_n+=1;
+        extra = true;
+    }
+    if(extra){
+        startindex = my_rank*my_n;
+    }
+    else{
+        startindex = num_temps -my_n*(numprocs - my_rank);
+    }
+    unsigned long accepted = 0;
+    unsigned long acceptedmoves[num_temps];
+    for( int i = 0; i < numprocs; i++) acceptedmoves[i] = 0.;
 
+    double temperature[num_temps];
+    for(int i=0;i<num_temps;i++){
+      temperature[i] = initial_temp +i*temp_step;
+    }
     int startcount = 300000;
+
     //double energies[mcs];
     idum = -1-my_rank; // random starting point
-    for ( double temperature = my_temp_start; temperature < my_temp_end; temperature+=temp_step){
-        cout << "Running calculation for temperature = " << temperature << endl;
+    for ( int i = startindex; i< startindex+my_n; i++){
+        cout << "Running calculation for temperature = " << temperature[i] << endl;
         //    initialise energy and magnetization
         E = M = 0.;
         // setup array for possible energy changes
         for( int de =-8; de <= 8; de++) w[de+8] = 0;
-        for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature);
+        for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature[i]);
         // initialise array for expectation values
         for( int i = 0; i < 5; i++) average[i] = 0.;
-        initialize(n_spins, temperature, spin_matrix, E, M);
+        initialize(n_spins, temperature[i], spin_matrix, E, M);
 
         // start Monte Carlo computation
         for (int cycles = 0; cycles <= mcs; cycles++){
@@ -111,12 +127,12 @@ int main(int argc, char* argv[])
         }
 
     }
-    unsigned long acceptedmoves_global[numprocs];
-    for( int i = 0; i < numprocs; i++) acceptedmoves_global[i] = 0.;
+    unsigned long acceptedmoves_global[num_temps];
+    for( int i = 0; i < num_temps; i++) acceptedmoves_global[i] = 0.;
 
-    MPI_Allreduce(acceptedmoves,acceptedmoves_global,numprocs,MPI_UNSIGNED_LONG,MPI_SUM,MPI_COMM_WORLD);
+    MPI_Allreduce(acceptedmoves,acceptedmoves_global,num_temps,MPI_UNSIGNED_LONG,MPI_SUM,MPI_COMM_WORLD);
     if(my_rank==0){
-        for(int i=0;i<8;i++){
+        for(int i=0;i<num_temps;i++){
             ofile << setw(15) << setprecision(8) << initial_temp + i*temp_step <<"\t"<< acceptedmoves_global[i] << endl;
         }
     }
