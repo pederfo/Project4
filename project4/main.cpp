@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
       ofile.open(outfilename);
     }
 
-    n_spins = 20; mcs = 4000000;  initial_temp = 1; final_temp = 1; temp_step =0.01;
+    n_spins = 20; mcs = 4000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.01;
 
 
     int size = (final_temp-initial_temp)/temp_step;
@@ -127,8 +127,8 @@ int main(int argc, char* argv[])
         // print results
         if ( my_rank == 0) {
           ofile << setw(15) << setprecision(8) << accepted_total[counter];
-          output(n_spins, mcs, temperature, total_average);
-        }
+          //output(n_spins, mcs, temperature, total_average);
+            }
         counter += 1;
     }
 
