@@ -3,7 +3,11 @@ from numpy import *
 from matplotlib import rc 
 rc('font',**{'family':'serif'}) # This is for Latex writing
 
-#Part 1
+"""
+This is the plotting file used for output using method 3.
+Note the "output.dat" on the line below indicating the datafile used.
+You MUST set this yourself.
+"""
 
 data = loadtxt("output.dat",unpack=True);
 
@@ -14,6 +18,7 @@ title(r'Expectation values vs Monte Carlo cycles')
 ylabel(r'Expectation value',size= 14)
 xlabel(r'Monte Carlo cycles',size=14)
 legend(loc='best')
+xlim[np.min(data[0]),np.max(data[0])])
 ylim([-2.5,1.5])
 #show()
 
@@ -26,4 +31,5 @@ legend(loc='best')
 title(r'Magnetic susceptibility and Specific heat',size=14)
 ylabel(r'$C_v$ and $\chi$',size=14)
 xlabel(r'Monte Carlo cycles',size=14)
+xlim[np.min(data[0]),np.max(data[0])])
 show()

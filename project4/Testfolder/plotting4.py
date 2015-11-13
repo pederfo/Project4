@@ -3,16 +3,20 @@ import numpy as np
 from matplotlib import rc 
 rc('font',**{'family':'serif'}) # This is for Latex writing
 
-"""This file plots the percentage of accepted moves as a function of temperature
-Note that the file must be named acceptedmoves.dat and you have to update the variables 
-mcs, and spin with the appropriate numbers. 
-Column 0 is temperature and column 1 is the number of accepted moves.
+"""
+This is the plotting file used for output using method 4.
+Note the "output.dat" on the line below indicating the datafile used.
+You MUST set this yourself.
+This file is also set up so that you get a plot with the percent of accepted moves,
+and because of this the user MUST update the variables mcs and spins with the values used for the datafile in use.
 """
 
-data = np.loadtxt("acceptedmoves.dat",unpack=True);
 mcs = 1000000
 spins = 20
 totalmoves = spins*spins*mcs
+
+
+data = np.loadtxt("acceptedmoves.dat",unpack=True);
 plt.figure(0)
 plt.plot(data[0],data[1]/(totalmoves)*100)
 plt.title(r'Probability distribution of energy states')
