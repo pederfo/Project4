@@ -213,7 +213,7 @@ Comparing the output from the program with the values we calculated earlier give
 \section{Larger systems}\label{sec:Monte Carlo import}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Since we have now verified that our program runs correctly we want to increase the size of the lattice. We start by increasing the number of spins to $L = 20$ in each direction.
-We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$. Figure \ref{expecEM20} show the expectation values for energy and magnetization, while figure \ref{C_VandChiL20} shows the susceptibility and the specific heat. We see that we need about 200,000 Monte Carlo cycles for the values to stabilize.
+We did not study how many cycles were needed to reach the most likely state in the last section. This is something we should study so that we know how much time is needed to reach an equilibrium state, and so how long we have to wait before we start computing our expectation values. We start by making an estimate by plotting the the expectations values as function of the number of Monte Carlo cycles. This is done for $T = 1$. Figure \ref{expecEM20} show the expectation values for energy and magnetization, while figure \ref{C_VandChiL20} shows the susceptibility and the specific heat. We see that we need about 200,000 Monte Carlo cycles for the values to stabilize. In our program this has been set to 300,000 to make sure this is fulfilled.
 
 \begin{figure}
  \includegraphics[width=.49\textwidth]{expecEM20.png}
@@ -260,25 +260,17 @@ Because of this it would be interesting to see how many configurations that are 
  \caption{The percentage of accepted configurations for a given temperature. In this case we used 1,000,000 Monte Carlo cycles for every temperature, and $L=20$.}
 \label{acceptconfig}
 \end{figure}
-
 The probability P(E) of being in state E can be computed by counting the number of times a specific energy state appears in the simulation. The histograms in figure \ref{prob1} and \ref{prob2} shows the probability of each energy state for temperatures $T = 1$, and $T = 2.4$.
-
 \begin{figure}
  \includegraphics[width=.49\textwidth]{prob_T21_MC1mill_afterthermal.png}
  \caption{The histogram shows the probability distribution of energy states for $T=2.1$.}
 \label{prob1}
 \end{figure}
-
-
 \begin{figure}
  \includegraphics[width=.49\textwidth]{prob_T24_MC1mill_afterthermal.png}
  \caption{The percentage of accepted configurations for a given temperature.In this case we used 1,000,000 Monte Carlo cycles for every temperature, and $L=20$.}
 \label{prob2}
 \end{figure}
-
-
-
-
 This means that if we increase the temperature the probability of reaching a high energy state gets lower and lower. Because of this there is a transition point where we go from having a lattice that is magnetized to one which is not. Note that increasing the temperature further has no effect other than minimizing the magnetization even further. 
 To study this we plot the expectation values for energy and magnetization, as well as the specific heat and the susceptibility for $T=[2.1,2.7]$. The first attempt uses $L=20$. The results of this can be seen in figure \ref{expecEML20T} and \ref{C_VandChiL_20_T}. We see that the susceptibility goes up between $T=2.3$ and $T=2.4$. This could indicate a phase transition. Looking at the expectation value for the magnetization this would seem to be the case. We should do the same with a larger lattice to be certain.
 \begin{figure}

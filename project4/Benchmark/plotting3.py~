@@ -18,7 +18,7 @@ title(r'Expectation values vs Monte Carlo cycles')
 ylabel(r'Expectation value',size= 14)
 xlabel(r'Monte Carlo cycles',size=14)
 legend(loc='best')
-xlim[min(data[0]),max(data[0])])
+xlim([min(data[0]),max(data[0])])
 ylim([-2.5,1.5])
 
 C_V = data[3]/(data[1]*data[1])

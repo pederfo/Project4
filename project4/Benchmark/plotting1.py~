@@ -19,7 +19,7 @@ totalmoves = spins*spins*mcs
 data = np.loadtxt("output.dat",unpack=True);
 plt.figure(0)
 plt.plot(data[0],data[1]/(totalmoves)*100)
-plt.title(r'Probability distribution of energy states')
+plt.title(r'Percentage of moves accepted for each temperature')
 plt.ylabel(r'Percent accepted moves',size= 14)
 plt.xlabel(r'Temperature [kT/J]',size=14)
 plt.legend(loc='best')

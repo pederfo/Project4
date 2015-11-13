@@ -11,8 +11,8 @@ This file is also set up so that you get a plot with the percent of accepted mov
 and because of this the user MUST update the variables mcs and spins with the values used for the datafile in use.
 """
 
-mcs = 1000000
-spins = 20
+mcs = 1000000.
+spins = 20.
 totalmoves = spins*spins*mcs
 
 

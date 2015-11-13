@@ -26,7 +26,7 @@ void read_input(int&, int&, double&, double&, double&);
 // Function to initialise energy and magnetization
 void initialize(int, double, int **, double&, double&, bool ordered);
 // The metropolis algorithm
-void Metropolis(int, long&, int **, double&, double&, double *, unsigned long &);
+void Metropolis(int, long&, int **, double&, double&, double *, long &);
 // prints to file the results of the calculations
 void output(int, int, double, double *);
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     char *outfilename;
     long idum;
     int **spin_matrix, n_spins, mcs, my_rank, numprocs,method;
-    double w[17], average[5],initial_temp, final_temp, E, M, temp_step;
+    double w[17],initial_temp, final_temp, E, M, temp_step;
     bool ordered;
     int counter= 0;
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     or an unordered one. This is controlled simply with either true or false statements
     */
 
-    n_spins = 2; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.5; temp_step =0.025; method = 2,ordered=true;
+    n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.01; method = 2,ordered=true;
 
     // Broadcast to all nodes common variables
     MPI_Bcast (&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -74,18 +74,13 @@ int main(int argc, char* argv[])
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
 
 
-    /*Array for energies
-        This can only be used for one temperature at a time*/
+    //Array for energies.This can only be used for one temperature at a time
     double energies[mcs];
     for(int i=0;i<mcs;i++) energies[i] = 0;
 
-    /*
-    Determine the values for all temperature steps and assign each to their respective processors.
-    */
-
+    // Determine the values for all temperature steps and assign each to their respective processors.
     bool extra = false;
     int num_temps = (final_temp - initial_temp)/temp_step+ 1;
-
     int my_n = num_temps/numprocs;
     int rest = num_temps%numprocs;
     int startindex = 0;
@@ -99,10 +94,15 @@ int main(int argc, char* argv[])
     else{
         startindex = num_temps -my_n*(numprocs - my_rank);
     }
+    //Define the average variables we will be filling
+    double average[num_temps][5];
     //Assign arrays for counting the number of accepted moves for each temperature step.
-    unsigned long accepted = 0;
-    unsigned long acceptedmoves[num_temps];
-    for( int i = 0; i < numprocs; i++) acceptedmoves[i] = 0.;
+    long accepted[num_temps];
+    for( int i = 0; i < num_temps; i++) accepted[i] = 0.;
+    long acceptedmoves[num_temps];
+    for( int i = 0; i < num_temps; i++) acceptedmoves[i] = 0.;
+    long acceptedmoves_global[num_temps];
+    for( int i = 0; i <= num_temps; i++) acceptedmoves_global[i] = 0.;
 
     //Fill the temperature array with all the temperatures for this run.
     double temperature[num_temps];
@@ -123,38 +123,36 @@ int main(int argc, char* argv[])
         for( int de =-8; de <= 8; de++) w[de+8] = 0;
         for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature[i]);
         //Initialise array for expectation values
-        for( int i = 0; i < 5; i++) average[i] = 0.;
+        for( int j = 0; j < 5; j++) average[i][j] = 0.;
         initialize(n_spins, temperature[i], spin_matrix, E, M,ordered);
 
         // start Monte Carlo computation
         for (int cycles = 0; cycles <= mcs; cycles++){
-            Metropolis(n_spins, idum, spin_matrix, E, M, w,accepted);
+            Metropolis(n_spins, idum, spin_matrix, E, M, w,accepted[i]);
             // update expectation values
-            average[0] += E;    average[1] += E*E;
-            average[2] += M;    average[3] += M*M; average[4] += fabs(M);
+            average[i][0] += E;    average[i][1] += E*E;
+            average[i][2] += M;    average[i][3] += M*M; average[i][4] += fabs(M);
             if(cycles >= startcount){
                 energies[cycles] = E;
                 if((my_rank==0) & (method==4)){
                     ofile << setw(15) << energies[cycles] << endl;
                 }
-                acceptedmoves[i] += accepted;
+                acceptedmoves[i] += accepted[i];
+                accepted[i] = 0;
+
             }
 
             if((my_rank==0)&(method==3)& (counter ==1000)){
                 ofile << setw(15) << setprecision(8) << cycles;
-                output(n_spins, cycles, temperature[i], average);
+                output(n_spins, cycles, temperature[i], average[i]);
                 counter = 0;
-
-                accepted = 0;
             }
+
             counter +=1;
-        }
-        if(method==2){
-            output(n_spins,mcs,temperature[i],average);
+            accepted[i] = 0;
         }
 
     }
-    for(int i=0; i< num_temps;i++) cout<< temperature[i]<< endl;
 
     if((my_rank == 0) & (method==0)){
         cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;
@@ -162,14 +160,24 @@ int main(int argc, char* argv[])
         cout << "analytical Mavg : " << 0. << endl;
         cout << "analytical Mvar : " << 32.*(exp(8.)+1.)/(12.+4.*cosh(8.))/4. - pow(8.*(exp(8.)+2.)/(12.+ 4*cosh(8.)) ,2)/4 << endl;
         cout << "analytical Mabs average : " << 8.*(exp(8.)+2.)/(12.+ 4*cosh(8.))/4. << endl;
-        output(n_spins, mcs, temperature[0], average);
+        output(n_spins, mcs, temperature[0], average[0]);
     }
 
 
+
     //Sort all acceptemoves from all processors into one global array
-    unsigned long acceptedmoves_global[num_temps];
-    for( int i = 0; i <= num_temps; i++) acceptedmoves_global[i] = 0.;
-    MPI_Allreduce(acceptedmoves,acceptedmoves_global,num_temps,MPI_UNSIGNED_LONG,MPI_SUM,MPI_COMM_WORLD);
+    MPI_Allreduce(acceptedmoves,acceptedmoves_global,num_temps,MPI_LONG,MPI_SUM,MPI_COMM_WORLD);
+
+    //Sort all average values into a global array
+    double global_average[num_temps][5];
+    for(int i = 0; i<num_temps;i++){
+        for(int j=0;j<5;j++){
+            global_average[i][j] = 0;
+        }
+    }
+    for(int i=0;i<num_temps;i++){
+        MPI_Allreduce(average[i],global_average[i],num_temps,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
+    }
 
     /*This method prints the temperature step and the numebr of accepted moves for that step.
     The user must note the number of cycles and the number of spins themselves if they want
@@ -179,8 +187,15 @@ int main(int argc, char* argv[])
         for(int i=0;i<num_temps;i++){
             ofile << setw(15) << setprecision(8) << initial_temp + i*temp_step <<"\t"<< acceptedmoves_global[i] << endl;
         }
-
     }
+    /*This method prints the expectation values
+    for every temperature in the interval set by the user*/
+    if((method==2) & (my_rank==0)){
+        for(int i=0;i<num_temps;i++){
+            output(n_spins,mcs,temperature[i],global_average[i]);
+        }
+    }
+
 
     //cout << "Accepted moves: "<< acceptedmoves <<endl;
     //cout << "Total moves: "<<mcs*n_spins*n_spins << endl;
@@ -192,6 +207,8 @@ int main(int argc, char* argv[])
     MPI_Finalize ();
     return 0;
 }
+//End of main program
+
 
 
 // read in input data
@@ -245,7 +262,9 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 }// end function initialise
 
-void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, unsigned long &accepted)
+
+//Function to do the metropolis sampling
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, long &accepted)
 {
     // loop over all spins
     for(int y =0; y < n_spins; y++) {
@@ -267,7 +286,7 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
     }
 } // end of Metropolis sampling over spins
 
-
+//Function that prints to file
 void output(int n_spins, int mcs, double temperature, double *average)
 {
     double norm = 1/((double) (mcs));  // divided by total number of cycles
