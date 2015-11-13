@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     or an unordered one. This is controlled simply with either true or false statements
     */
 
-    n_spins = 20; mcs = 1000000;  initial_temp = 2; final_temp = 2.7; temp_step =0.05; method = 1,ordered=true;
+    n_spins = 2; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.5; temp_step =0.025; method = 2,ordered=true;
 
     // Broadcast to all nodes common variables
     MPI_Bcast (&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -148,15 +148,13 @@ int main(int argc, char* argv[])
                 accepted = 0;
             }
             counter +=1;
-
-
-
         }
         if(method==2){
             output(n_spins,mcs,temperature[i],average);
         }
 
     }
+    for(int i=0; i< num_temps;i++) cout<< temperature[i]<< endl;
 
     if((my_rank == 0) & (method==0)){
         cout << "analytical Eavg : " << -32.*sinh(8.)/(12. + 4.*cosh(8.))/4. << endl;

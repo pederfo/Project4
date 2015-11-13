@@ -1,0 +1,13 @@
+This folder contains a number of .dat files.
+This file shows the paramteres used for producing each of those files
+
+analytical.dat
+ n_spins = 2; mcs = 1000000;  initial_temp = 1; final_temp = 1; temp_step =0.05; method = 0,ordered=true;
+acceptedmoves.dat
+ n_spins = 20; mcs = 1000000;  initial_temp = 1; final_temp = 2; temp_step =0.05; method = 1,ordered=true;
+
+
+expectmc.dat
+ n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.0; temp_step =0.05; method = 3,ordered=true;
+energies.dat
+ n_spins = 20; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.0; temp_step =0.05; method = 4,ordered=true;
