@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     or an unordered one. This is controlled simply with either true or false statements
     */
 
-    n_spins = 60; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.01; method = 2,ordered=true;
+    n_spins = 80; mcs = 1000000;  initial_temp = 2.0; final_temp = 2.7; temp_step =0.01; method = 2,ordered=true;
 
     // Broadcast to all nodes common variables
     MPI_Bcast (&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
