@@ -163,8 +163,6 @@ int main(int argc, char* argv[])
         output(n_spins, mcs, temperature[0], average[0]);
     }
 
-
-
     //Sort all acceptemoves from all processors into one global array
     MPI_Allreduce(acceptedmoves,acceptedmoves_global,num_temps,MPI_LONG,MPI_SUM,MPI_COMM_WORLD);
 
@@ -175,10 +173,17 @@ int main(int argc, char* argv[])
             global_average[i][j] = 0;
         }
     }
+    double temperaturelist[num_temps];
+    for(int i=0;i<num_temps;i++){
+           temperaturelist[i] = temperature[i];
+    }
+
     for(int i=0;i<num_temps;i++){
         MPI_Allreduce(average[i],global_average[i],num_temps,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
     }
-
+    for(int i=0;i<num_temps;i++){
+        cout << temperaturelist[i]<< endl;
+    }
     /*This method prints the temperature step and the numebr of accepted moves for that step.
     The user must note the number of cycles and the number of spins themselves if they want
     to plot the percentage of the total moves. (For reference the total numer of moves=n_spins*n_spins*mcs)
@@ -188,11 +193,12 @@ int main(int argc, char* argv[])
             ofile << setw(15) << setprecision(8) << initial_temp + i*temp_step <<"\t"<< acceptedmoves_global[i] << endl;
         }
     }
+
     /*This method prints the expectation values
     for every temperature in the interval set by the user*/
     if((method==2) & (my_rank==0)){
         for(int i=0;i<num_temps;i++){
-            output(n_spins,mcs,temperature[i],global_average[i]);
+            output(n_spins,mcs,temperaturelist[i],global_average[i]);
         }
     }
 
