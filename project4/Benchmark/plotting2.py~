@@ -4,7 +4,7 @@ from matplotlib import rc
 rc('font',**{'family':'serif'}) # This is for Latex writing
 
 """
-This is the plotting file used for output using method 3.
+This is the plotting file used for output using method 2.
 Note the "output.dat" on the line below indicating the datafile used.
 You MUST set this yourself.
 """
