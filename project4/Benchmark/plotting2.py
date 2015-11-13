@@ -10,7 +10,7 @@ You MUST set this yourself.
 """
 
 
-data = loadtxt("L40.dat",unpack=True);
+data = loadtxt("output.dat",unpack=True);
 figure(0)
 plot(data[0],data[1],label=r'$<E>$')
 plot(data[0],data[5],label=r'$<|M|>$')
